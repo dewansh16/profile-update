@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast } from "@/components/ui/use-toast";
 import React, {
   createContext,
   useContext,
@@ -9,6 +10,7 @@ import React, {
   FC,
 } from "react";
 
+import LoadingBar from "react-top-loading-bar";
 // Define the shape of the user data
 interface User {
   firstName: string;
@@ -34,19 +36,29 @@ interface UserProviderProps {
 // Create the context provider component
 export const UserProvider: FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [loadingProgress, setLoadingProgress] = useState<number>(0);
+  const { toast } = useToast();
 
   useEffect(() => {
     // Fetch user data from the API
     const fetchUser = async () => {
       try {
+        setLoadingProgress(30);
         const response = await fetch("/api/profile");
-        console.log("response from get = ", response);
+        setLoadingProgress(70);
         if (response.ok) {
           const userData = await response.json();
           setUser(userData.user);
+          setLoadingProgress(100);
+        } else {
+          throw new Error("Failed to fetch user data");
         }
       } catch (error) {
         console.error("Failed to fetch user data", error);
+        toast({
+          title: "Error fetching user data",
+        });
+        setLoadingProgress(100);
       }
     };
 
@@ -57,6 +69,12 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
+      <LoadingBar
+        color="#f11946"
+        height={3}
+        progress={loadingProgress}
+        onLoaderFinished={() => setLoadingProgress(0)}
+      />
       {children}
     </UserContext.Provider>
   );
