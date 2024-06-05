@@ -4,10 +4,10 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import crypto from "crypto";
 
 const s3Client = new S3Client({
-  region: process.env.AWS_BUCKET_REGION!,
+  region: process.env.AWS_BUCKET_REGION1!,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.AWS_ACCESS_KEY1!,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY1!,
   },
 });
 
@@ -39,7 +39,7 @@ export async function getSignedURL({
   }
 
   const putObjectCommand = new PutObjectCommand({
-    Bucket: process.env.AWS_BUCKET_NAME!,
+    Bucket: process.env.AWS_BUCKET_NAME1!,
     Key: generateFileName(),
     ContentType: fileType,
     ContentLength: fileSize,

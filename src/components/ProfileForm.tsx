@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { Camera } from "lucide-react";
+import { Camera, Loader } from "lucide-react";
 import { getSignedURL } from "@/actions/actions";
 import { useToast } from "./ui/use-toast";
 import { useUser } from "@/context/user-context";
@@ -26,6 +26,7 @@ type FormData = z.infer<typeof schema>;
 const ProfileForm: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for file input element
   const [fileName, setFileName] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const { user, setUser } = useUser();
   const { toast } = useToast();
 
@@ -123,6 +124,7 @@ const ProfileForm: React.FC = () => {
   };
 
   const onSubmit = async (data: FormData) => {
+    setLoading(true);
     const parsedData = schema.safeParse(data);
 
     if (!parsedData.success) {
@@ -130,6 +132,7 @@ const ProfileForm: React.FC = () => {
       toast({
         title: "Validation errors",
       });
+      setLoading(false);
       return;
     }
 
@@ -152,6 +155,7 @@ const ProfileForm: React.FC = () => {
         title: "Failed to update profile",
       });
     }
+    setLoading(false);
   };
 
   const handleFileInputClick = (
@@ -253,13 +257,15 @@ const ProfileForm: React.FC = () => {
             onClick={() => {
               setFileName(null);
               reset();
-            }}>
+            }}
+            disabled={loading}>
             Reset
           </Button>
           <Button
             type="submit"
+            disabled={loading}
             className="bg-[#1A80E5] hover:bg-sky-600 text-white font-semibold py-4 px-6 rounded-xl">
-            Save
+            {loading ? <Loader className="animate-spin mr-2" /> : "Save"}
           </Button>
         </div>
       </div>
