@@ -25,3 +25,6 @@ Let's keep it simple
 - Copy .env.example to .env
 - Start Next App
   - npm run dev
+
+
+https://github.com/dewansh16/profile-update/assets/75570560/30ad96a0-7617-4874-8f60-344b8838301b
